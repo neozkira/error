@@ -1,59 +1,56 @@
 from pygame import *
 from random import randint
 
-#фоновая музыка
 mixer.init()
 mixer.music.load('space.ogg')
 mixer.music.play()
 fire_sound = mixer.Sound('fire.ogg')
 
-#шрифты и надписи
 font.init()
 font1 = font.Font(None, 80)
 win = font1.render('YOU WIN!', True, (255, 255, 255))
 lose = font1.render('YOU LOSE!', True, (180, 0, 0))
 font2 = font.Font(None, 36)
 
-# нам нужны такие картинки:
-img_back = "galaxy.jpg" # фон игры
-img_hero = "rocket.png" # герой
-img_bullet = "bullet.png" # пуля
-img_enemy = "ufo.png" # враг
+img_back = "galaxy.jpg" 
+img_hero = "rocket.png"
+img_bullet = "bullet.png" 
+img_enemy = "ufo.png"
 
-score = 0 # сбито кораблей
-lost = 0 # пропущено кораблей
-max_lost = 3 # проиграли, если пропустили столько
+score = 0 
+lost = 0 
+max_lost = 3 
 
-# класс-родитель для других спрайтов
+
 class GameSprite(sprite.Sprite):
-  # конструктор класса
+
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
-        # Вызываем конструктор класса (Sprite):
+
         sprite.Sprite.__init__(self)
 
-        # каждый спрайт должен хранить свойство image - изображение
+
         self.image = transform.scale(image.load(player_image), (size_x, size_y))
         self.speed = player_speed
 
-        # каждый спрайт должен хранить свойство rect - прямоугольник, в который он вписан
+
         self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
  
-  # метод, отрисовывающий героя на окне
+
     def reset(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
-# класс главного игрока
-class Player(GameSprite):
-    # метод для управления спрайтом стрелками клавиатуры
+
+  class Player(GameSprite):
+
     def update(self):
         keys = key.get_pressed()
         if keys[K_LEFT] and self.rect.x > 5:
             self.rect.x -= self.speed
         if keys[K_RIGHT] and self.rect.x < win_width - 80:
             self.rect.x += self.speed
-  # метод "выстрел" (используем место игрока, чтобы создать там пулю)
+
     def fire(self):
         bullet = Bullet(img_bullet, self.rect.centerx, self.rect.top, 15, 20, -15)
         bullets.add(bullet)
